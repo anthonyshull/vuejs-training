@@ -8,7 +8,7 @@ import Alert from 'vue-strap/src/Alert.vue';
 // This comes from client/components...
 import Board from "../components/board.vue";
 
-const VersionTwo = new Vue({
+export default {
   // The element we're attaching our component to
   el: "#version-two",
   // Boards will get populated after an AJAX request
@@ -74,6 +74,4 @@ const VersionTwo = new Vue({
     'board': Board,
     'alert': Alert
   }
-});
-
-export default VersionTwo;
+};
