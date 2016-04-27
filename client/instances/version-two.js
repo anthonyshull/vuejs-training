@@ -71,7 +71,7 @@ export default {
   },
   // Register our board component so we can use it in our template
   components: {
-    'board': Board,
-    'alert': Alert
+    'vue-board': Board,
+    'vue-alert': Alert
   }
 };
