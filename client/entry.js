@@ -1,7 +1,12 @@
 import Vue from 'vue';
+import instances from './instances';
 
-new Vue({
-  el: '#content'
-});
+// This is Turbolinks dependent. `page:change` wraps the `DOMContentLoaded` event
+document.addEventListener('page:change', (/* event */) => {
+  console.log(instances)
+  instances.forEach(instance => new Vue(instance))
 
-import VersionTwo from './instances/version-two';
+  new Vue({
+    el: '#content'
+  });
+})
