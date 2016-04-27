@@ -1,7 +1,10 @@
 <template>
-  <li class="list-group-item">{{ task.description }}
-    <!--- @click is shorthand for v-on:click any v-on: events can be prepended with an @ instead -->
-    <button class="btn btn-danger btn-xs" @click="deleteTask">
+  <li class="list-group-item">
+    {{ task.description }}
+    <!--- @click is shorthand for v-on:click
+          any v-on: events can be prepended with an @ instead -->
+    <button class="btn btn-danger btn-xs"
+            @click="deleteTask">
       Delete Task
       <span class="glyphicon glyphicon-remove"></span>
     </button>
@@ -9,7 +12,6 @@
 </template>
 
 <script>
-  import Task from './task.vue'
   export default {
     props: ['task','board'],
     data: function() {
