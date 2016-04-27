@@ -1,15 +1,14 @@
 <div id="version-two">
-  <alert
-  :show.sync="showAlert"
-  :duration="3000"
-  type="danger"
-  width="400px"
-  placement="top"
-  dismissable>
+  <vue-alert :show.sync="showAlert"
+         :duration="3000"
+         type="danger"
+         width="400px"
+         placement="top"
+         dismissable>
     <p><span class="glyphicon glyphicon-trash"></span>You just deleted something.</p>
-  </alert>
-  <board
-    v-for="board in boards"
-    :board="board">
-  </board>
+  </vue-alert>
+
+  <vue-board v-for="board in boards"
+         :board="board">
+  </vue-board>
 </div>
