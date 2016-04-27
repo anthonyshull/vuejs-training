@@ -1,0 +1,19 @@
+current directory: /Users/aschull/workspace/version-two/vendor/bundle/ruby/2.3.0/gems/byebug-8.2.4/ext/byebug
+/usr/local/opt/ruby/bin/ruby -r ./siteconf20160425-24163-eb605s.rb extconf.rb
+creating Makefile
+
+current directory: /Users/aschull/workspace/version-two/vendor/bundle/ruby/2.3.0/gems/byebug-8.2.4/ext/byebug
+make "DESTDIR=" clean
+
+current directory: /Users/aschull/workspace/version-two/vendor/bundle/ruby/2.3.0/gems/byebug-8.2.4/ext/byebug
+make "DESTDIR="
+compiling breakpoint.c
+compiling byebug.c
+compiling context.c
+compiling locker.c
+compiling threads.c
+linking shared-object byebug/byebug.bundle
+
+current directory: /Users/aschull/workspace/version-two/vendor/bundle/ruby/2.3.0/gems/byebug-8.2.4/ext/byebug
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 byebug.bundle ./.gem.20160425-24163-563k40/byebug
