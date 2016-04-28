@@ -418,5 +418,11 @@ Finally, let's float our button right. A Vue component can also have a `<style>`
 
 That's it! We can now add and delete tasks from a board.
 
-### Extra Credit -- Move a Task
+### Extra Credit &ndash; Move a Task
 
+If you're interested in going above and beyond, you can implement a feature to move a task between boards.
+The route `/tasks/:id/update` accepts a POST request and sends that to the update method of the tasks controller.
+Send one POST parameter of `board` with the id of the board you want that task moved to.
+
+You *should* already be able to think of multiple ways you could do this with Vue.
+Read the docs if necessary and good luck!
