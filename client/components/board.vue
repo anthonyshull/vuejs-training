@@ -31,13 +31,13 @@
   export default {
     // The `board` property gets passed by the parent element with :board=board
     props: ['board'],
-    data: function() {
+    data() {
       return {
         input: ''
       }
     },
     methods: {
-      addTask: function() {
+      addTask() {
         this.$dispatch('addTask', this.board.id, this.input);
         this.input = '';
       }

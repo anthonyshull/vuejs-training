@@ -17,54 +17,54 @@ export default {
     showAlert: false
   },
   // When the component is created we fetch our boards
-  created: function() {
+  created() {
     this.fetchBoards();
   },
   // Methods will be attached to `this`
   methods: {
-    fetchBoards: function() {
+    fetchBoards() {
       // This comes from vue-resource and keeps a reference to `this`
       this.$http({
         url: 'boards.json',
         method: 'GET'
       })
       // The promise is returned as a response object
-      .then(function(response) {
+      .then((response) => {
         // We change this.boards to the response data
         this.$set('boards', response.data);
-      }, function(error) {
+      }, (error) => {
         console.error('Error fetching boards: ' + error.toString());
       });
     }
   },
   events: {
-    addTask: function(board, task) {
+    addTask(board, task) {
       this.$http({
         url: 'tasks',
         method: 'POST',
         data: {
-          board: board,
-          task: task
+          board,
+          task
         }
       })
-      .then(function(response) {
+      .then((response) => {
         // Reload the boards
         this.fetchBoards();
-      }, function(error) {
+      }, (error) => {
         console.error('Error adding task: ' + error.toString());
       });
     },
-    deleteTask: function(task) {
+    deleteTask(task) {
       this.$http({
         url: 'tasks/' + task + '/delete',
         method: 'POST',
       })
-      .then(function(response) {
+      .then((response) => {
         // Reload the boards
         this.fetchBoards();
         // Trigger our alert
         this.showAlert = !this.showAlert;
-      }, function(error) {
+      }, (error) => {
         console.error('Error deleting task: ' + error.toString());
       });
     }

@@ -8,4 +8,4 @@ document.addEventListener('page:change', (/* event */) => {
   new Vue({
     el: '#content'
   });
-})
+});
