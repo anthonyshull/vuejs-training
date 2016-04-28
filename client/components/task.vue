@@ -13,7 +13,7 @@
 
 <script>
   export default {
-    props: ['task','board'],
+    props: ['task', 'board'],
     data() {
       return {};
     },
@@ -21,8 +21,8 @@
       deleteTask() {
         // Send a message to the parent component to delete a task
         this.$dispatch('deleteTask', this.task.id);
-      }
-    }
+      },
+    },
   };
 </script>
 

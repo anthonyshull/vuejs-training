@@ -1,20 +1,20 @@
 // This comes from node_modules
-import Vue from "vue";
+import Vue from 'vue';
 // Now we use the vue-resource from node_modules for AJAX
-import VueResource from "vue-resource";
+import VueResource from 'vue-resource';
 Vue.use(VueResource);
 // This comes from node_modules; it's a vue + bootstrap component
 import Alert from 'vue-strap/src/Alert.vue';
 // This comes from client/components...
-import Board from "../components/board.vue";
+import Board from '../components/board.vue';
 
 export default {
   // The element we're attaching our component to
-  el: "#version-two",
+  el: '#version-two',
   // Boards will get populated after an AJAX request
   data: {
     boards: [],
-    showAlert: false
+    showAlert: false,
   },
   // When the component is created we fetch our boards
   created() {
@@ -26,16 +26,16 @@ export default {
       // This comes from vue-resource and keeps a reference to `this`
       this.$http({
         url: 'boards.json',
-        method: 'GET'
+        method: 'GET',
       })
       // The promise is returned as a response object
       .then((response) => {
         // We change this.boards to the response data
         this.$set('boards', response.data);
       }, (error) => {
-        console.error('Error fetching boards: ' + error.toString());
+        console.error(`Error fetching boards: ${error.toString()}`);
       });
-    }
+    },
   },
   events: {
     addTask(board, task) {
@@ -44,34 +44,34 @@ export default {
         method: 'POST',
         data: {
           board,
-          task
-        }
+          task,
+        },
       })
-      .then((response) => {
+      .then((/* response */) => {
         // Reload the boards
         this.fetchBoards();
       }, (error) => {
-        console.error('Error adding task: ' + error.toString());
+        console.error(`Error adding task: ${error.toString()}`);
       });
     },
     deleteTask(task) {
       this.$http({
-        url: 'tasks/' + task + '/delete',
+        url: `tasks/${task}/delete`,
         method: 'POST',
       })
-      .then((response) => {
+      .then((/* response */) => {
         // Reload the boards
         this.fetchBoards();
         // Trigger our alert
         this.showAlert = !this.showAlert;
       }, (error) => {
-        console.error('Error deleting task: ' + error.toString());
+        console.error(`Error deleting task: ${error.toString()}`);
       });
-    }
+    },
   },
   // Register our board component so we can use it in our template
   components: {
     'vue-board': Board,
-    'vue-alert': Alert
-  }
+    'vue-alert': Alert,
+  },
 };
