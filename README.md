@@ -1,9 +1,9 @@
 # Version Two
 
-In this tutorial you will create a super simple kanban board using Vue.js. You should get familiar with the [documentation](http://vuejs.org/guide/).
+In this tutorial you will create a super simple kanban board using Vue.js.
+You should get familiar with the [documentation](http://vuejs.org/guide/).
 
-All of the routes, controllers, and models for the app have been created in previous sprints
-so you just need to create the view layer.
+All of the routes, controllers, and models for the app have been created in previous sprints so you just need to create the view layer.
 
 Run the following to get your development environment up and running:
 
@@ -17,7 +17,14 @@ npm install
 npm run dev
 ```
 
-All of your JS dependencies will now be in /node_modules. A `/client` directory has also been created to house your custom JS. A process is watching that directory; any time you save a file it will be converted and placed in the asset pipeline for Rails.
+All of your JS dependencies will now be in /node_modules.
+A `/client` directory has also been created to house your custom JS.
+A process is watching that directory; any time you save a file it will be converted and placed in the asset pipeline for Rails.
+You should see the UI automagically update.
+
+To maximize your learning, we suggest that you type every line out instead of copying and pasting.
+Really think about what you're typing and try to get a feel for the overall logic of Vue.
+While doing the tutorial think of other ways you could implement the specifications and how you could express it in ES5 syntax.
 
 ### Introduction
 
@@ -29,11 +36,7 @@ import instances from './instances';
 
 // This is Turbolinks dependent. `page:change` wraps the `DOMContentLoaded` event
 document.addEventListener('page:change', (/* event */) => {
-  instances.forEach(instance => new Vue(instance))
-
-  new Vue({
-    el: '#content'
-  });
+  instances.forEach(instance => new Vue(instance));
 });
 ```
 
@@ -62,7 +65,7 @@ export default {
   },
   // Register our board component so we can use it in our template
   components: {
-    'vue-board': Board
+    'board': Board
   }
 };
 ```
@@ -73,14 +76,15 @@ The point of Vue, of course, is to render views. So, let's look at which views c
 
 ```html
 <div id="version-two">
-  <vue-board v-for="board in boards"
-             :board="board">
-  </vue-board>
+  <board v-for="board in boards"
+         :board="board">
+  </board>
 </div>
 ```
 
-Notice that the template includes a `vue-board` component that was made available by our `components` attribute (**Note:** As best-practice and to keep your Rails view code as clear as possible, we recommend that you prefix all Vue components used anywhere in your `/apps/views/` directory with the `vue-` prefix). The `v-for` directive will loop over all of the boards in our
-`data` attribute and render them from the `/client/components/board.vue` file. Let's look at that now:
+Notice that the template includes a `board` component that was made available by our `components` attribute.
+The `v-for` directive will loop over all of the boards in our `data` attribute and render them from the `/client/components/board.vue` file.
+Let's look at that now:
 
 ```html
 <template>
@@ -108,7 +112,6 @@ Notice that the template includes a `vue-board` component that was made availabl
   export default {
     // The `board` property gets passed by the parent element with :board=board
     props: ['board'],
-
     data() {
       return {};
     },
@@ -117,7 +120,6 @@ Notice that the template includes a `vue-board` component that was made availabl
     }
   };
 </script>
-
 ```
 
 The first thing you'll notice is that the `.vue` file contains both a template and a script element. When components are structured this way, Vue knows that the object exported by the script tag controls the html in the template tag (**Note:** These `.vue` files are handled by the `vueify` plugin).
@@ -137,7 +139,6 @@ Finishing up, we'll take a look at that task view in `/client/components/task.vu
 
 <script>
   export default {
-
     props: ['task','board'],
     data() {
       return {};
@@ -146,9 +147,12 @@ Finishing up, we'll take a look at that task view in `/client/components/task.vu
 </script>
 ```
 
-This should look familiar by now. The board component gives the task component its data via the `props` attribute. We also pass down the board id (we'll use it later.) The task merely renders its description with curly braces.
+This should look familiar by now. The board component gives the task component its data via the `props` attribute.
+We also pass down the board id (we'll use it later.)
+The task merely renders its description with curly braces.
 
-It might seem like we've already seen a lot of files, but the good news is that those are the only ones we'll be touching to complete our entire application. Everything here on out will be adding to those base components.
+It might seem like we've already seen a lot of files, but the good news is that those are the only ones we'll be touching to complete our entire application.
+Everything here on out will be adding to those base components.
 
 ### Load Boards
 
@@ -227,9 +231,10 @@ Let's start by adding an input to our board template:
 ```
 
 The `v-model` attribute on the input binds the value of the `input` element in the template to `this.input` data attribute in our script.
+We need to alter the data attribute to include this data. Set it to be an empty string.
 
 ```js
-data: function() {
+data() {
   return {
     'input': ''
   }
@@ -238,12 +243,11 @@ data: function() {
 
 **Note:** Vue really wants you to set your `data` attribute to a function returning an object.
 If you don't it will whine at you like a cat waiting to be fed.
-The reason why related to these being "components" (as opposed to "instances").
+That's because these are "components" rather than "instances."
 Vue components are meant to be reused, which means they will have multiple instances.
 If the `data` attribute were a simple object, each instance of a component would share the exact same `data`.
 By making the `data` attribute a function, each instance of a component is given its own version of the `data`.
 
-Inside of this component's `data`, we set the initial value of our input to be empty.
 
 Likewise, `@click` (shorthand for `v-on:click`) tells the script to call the method `this.addTask` on the click event.
 Let's add this to the script.
@@ -290,7 +294,7 @@ Wow! Now we can add tasks to our boards until we get bored enough to do somethin
 
 Here's something else: we can add tasks, but we can't delete them yet. Let's do that.
 
-Again, we'll start from the template and move up the chain. Add a button to the template with a click emitter.
+Again, we'll start from the template and move up the chain--from our script to the parent components. Add a button to the template with a click emitter.
 
 ```html
 <!--- task.vue -->
@@ -319,7 +323,8 @@ methods: {
 }
 ```
 
-And, just like before, we use `this.$dispatch` to send it up our parental chain. We need to listen for that event in `/client/instances/version-two.js`. Create a new entry in the `events` object.
+And, just like before, we use `this.$dispatch` to send it up our parental chain. We need to listen for that event in `/client/instances/version-two.js`.
+Create a new entry in the `events` object.
 
 ```js
 deleteTask(task) {
@@ -338,14 +343,29 @@ deleteTask(task) {
 
 We send a web request and re-load the boards on success. Pretty easy, huh?
 
+Let's pretty it up by floating our delete button to the right.
+A Vue component can also have a `<style>` tag.
+
+```html
+<!--- task.vue -->
+<style>
+  li button {
+    float: right;
+  }
+</style>
+```
+
 ### Bootstrap Alert
 
-We can add and delete tasks. But, besides the changing of data we have no way of showing the user
-that they've done anything. We should add an alert whenever a user deletes a task.
+We can add and delete tasks. But, besides the changing of data we have no way of showing the user that they've done anything.
+We should add an alert whenever a user deletes a task.
 
-If you look at the top of `/client/intances/version-two.js` you'll see that we imported an Alert object from `vue-strap`. Vue-strap gives us Bootstrap components that we can plug-and-play with Vue. That is, our component can pop-up a modal or alert or whatever all within Vue.
+If you look at the top of `/client/intances/version-two.js` you'll see that we imported an Alert object from `vue-strap`.
+Vue-strap gives us Bootstrap components that we can plug-and-play with Vue. That is, our component can pop-up a modal or alert or whatever all within Vue.
 
-In order to use it we need to first register it as a component. Because we want the application to issue the alerts we'll add it to our instance. Add it to our list of `components` in `/client/instances/version-two.js`.
+In order to use it we need to first register it as a component.
+Because we want the application to issue the alerts we'll add it to our instance.
+Add it to our list of `components` in `/client/instances/version-two.js`.
 
 ```js
 components: {
@@ -354,7 +374,7 @@ components: {
 }
 ```
 
-That makes available the `Alert` object we imported as the `<vue-alert>` tag in our template. Let's add it.
+That makes available the `Alert` object we imported as the `<alert>` tag in our template. Let's add it.
 
 ```html
 <!--- /app/views/boards/index.html.erb -->
@@ -377,7 +397,9 @@ That makes available the `Alert` object we imported as the `<vue-alert>` tag in 
 </div>
 ```
 
-The only property we're really interested in is `:show.sync=showAlert`. That will use `this.showAlert` in the script to control visibility. Let's add that as a `data` attribute.
+The only property we're really interested in is `:show.sync=showAlert`.
+That will use `this.showAlert` in the script to control visibility.
+Let's add that as a `data` attribute in `/client/instances/version-two.js`.
 
 ```js
 data: {
@@ -386,7 +408,7 @@ data: {
 }
 ```
 
-We need to trigger the showing of alerts. Edit the `deleteTask` methond.
+We need to trigger the showing of alerts. Edit the `deleteTask` method.
 
 ```js
 deleteTask(task) {
@@ -405,18 +427,7 @@ deleteTask(task) {
 }
 ```
 
-Finally, let's float our button right. A Vue component can also have a `<style>` tag.
-
-```html
-<!--- task.vue -->
-<style>
-  li button {
-    float: right;
-  }
-</style>
-```
-
-That's it! We can now add and delete tasks from a board.
+That's it! We can now add and delete tasks from a board with a cool alert.
 
 ### Extra Credit &ndash; Move a Task
 
