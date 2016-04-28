@@ -17,7 +17,7 @@ npm install
 npm run dev
 ```
 
-All of your JS dependencies will now be in /node_modules.
+All of your JS dependencies will now be in `/node_modules`.
 A `/client` directory has also been created to house your custom JS.
 A process is watching that directory; any time you save a file it will be converted and placed in the asset pipeline for Rails.
 You should see the UI automagically update.
