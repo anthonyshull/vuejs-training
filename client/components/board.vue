@@ -26,24 +26,24 @@
 </template>
 
 <script>
-  import Task from './task.vue'
+  import Task from './task.vue';
 
   export default {
     // The `board` property gets passed by the parent element with :board=board
     props: ['board'],
-    data: function() {
+    data() {
       return {
-        input: ''
-      }
+        input: '',
+      };
     },
     methods: {
-      addTask: function() {
+      addTask() {
         this.$dispatch('addTask', this.board.id, this.input);
         this.input = '';
-      }
+      },
     },
     components: {
-      'task': Task
-    }
+      task: Task,
+    },
   };
 </script>

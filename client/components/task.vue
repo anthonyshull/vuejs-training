@@ -13,16 +13,16 @@
 
 <script>
   export default {
-    props: ['task','board'],
-    data: function() {
+    props: ['task', 'board'],
+    data() {
       return {};
     },
     methods: {
-      deleteTask: function() {
+      deleteTask() {
         // Send a message to the parent component to delete a task
         this.$dispatch('deleteTask', this.task.id);
-      }
-    }
+      },
+    },
   };
 </script>
 

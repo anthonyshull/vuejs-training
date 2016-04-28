@@ -29,12 +29,16 @@ is an entry point. Create a file `entry.js` in the `/client` directory.
 
 ```js
 import Vue from 'vue';
+import instances from './instances';
 
-new Vue({
-  el: '#content'
+// This is Turbolinks dependent. `page:change` wraps the `DOMContentLoaded` event
+document.addEventListener('page:change', (/* event */) => {
+  instances.forEach(instance => new Vue(instance))
+
+  new Vue({
+    el: '#content'
+  });
 });
-
-import VersionTwo from './instances/version-two';
 ```
 This file simply imports Vue from `/node_modules`, creates a new instance of Vue using the `#content` container,
 and imports the application so that it can be used.
@@ -51,7 +55,7 @@ import Alert from 'vue-strap/src/Alert.vue';
 // This comes from client/components...
 import Board from "../components/board.vue";
 
-const VersionTwo = new Vue({
+export default new Vue({
   // The element we're attaching our component to
   el: "#version-two",
   // Boards will get populated after an AJAX request
@@ -63,8 +67,6 @@ const VersionTwo = new Vue({
     'board': Board
   }
 });
-
-export default VersionTwo;
 ```
 
 After importing everything we need we create a new Vue instance. It is given its `el` to tell it where to attach.
@@ -110,7 +112,7 @@ Notice that the template includes a `board` component that was made available by
   export default {
     // The `board` property gets passed by the parent element with :board=board
     props: ['board'],
-    data: function() {
+    data() {
       return {}
     },
     components: {
@@ -145,7 +147,7 @@ Finishing up, we'll take a look at that task view in `/client/components/task.vu
   import Task from './task.vue'
   export default {
     props: ['task','board'],
-    data: function() {
+    data() {
       return {};
     }
   };
@@ -167,17 +169,17 @@ Edit `/client/instances/version-two.js` and add a `methods` attribute to the Vue
 
 ```js
 methods: {
-  fetchBoards: function() {
+  fetchBoards() {
     // This comes from vue-resource and keeps a reference to `this`
     this.$http({
       url: 'boards.json',
       method: 'GET'
     })
     // The promise is returned as a response object
-    .then(function(response) {
+    .then((response) => {
       // We change this.boards to the response data
       this.$set('boards', response.data);
-    }, function(error) {
+    }, (error) => {
       console.error('Error fetching boards: ' + error.toString());
     });
   }
@@ -193,7 +195,7 @@ tapping into the `created` lifecycle event. Add a `created` attribute:
 
 ```js
 // When the component is created we fetch our boards
-created: function() {
+created() {
   this.fetchBoards();
 }
 ```
@@ -212,7 +214,10 @@ Let's start by adding an input to our board template:
 <!--- board.vue -->
 <template>
   <div class="col-md-4">
-    <h3><span class="badge">{{ board.tasks.length }}</span> {{ board.description }}</h3>
+    <h3>
+      <span class="badge">{{ board.tasks.length }}</span>
+      {{ board.description }}
+    </h3>
     <hr />
     <ul class="list-group">
       <!--- The colons mean that the prop is evaluated rather than passed as a string -->
@@ -224,8 +229,10 @@ Let's start by adding an input to our board template:
     </ul>
     <hr />
     <h5>Add Task</h5>
-    <input v-model="input" placeholder="description">
-    <button class="btn btn-success btn-xs" @click="addTask">
+    <input v-model="input"
+           placeholder="description">
+    <button class="btn btn-success btn-xs"
+            @click="addTask">
       Add Task
       <span class="glyphicon glyphicon-ok"></span>
     </button>
@@ -250,7 +257,7 @@ it will whine at you like a cat waiting to be fed. We set the value of our input
 
 ```js
 methods: {
-  addTask: function() {
+  addTask() {
     this.$dispatch('addTask', this.board.id, this.input);
     this.input = '';
   }
@@ -264,7 +271,7 @@ Add an `events` attribute to the instance.
 
 ```js
 events: {
-  addTask: function(board, task) {
+  addTask(board, task) {
     this.$http({
       url: 'tasks',
       method: 'POST',
@@ -273,10 +280,10 @@ events: {
         task: task
       }
     })
-    .then(function(response) {
+    .then((response) => {
       // Reload the boards
       this.fetchBoards();
-    }, function(error) {
+    }, (error) => {
       console.error('Error adding task: ' + error.toString());
     });
   }
@@ -297,8 +304,10 @@ Again, we'll start from the template and move up the chain. Add a button to the 
 ```html
 <!--- task.vue -->
 <template>
-  <li class="list-group-item">{{ task.description }}
-    <!--- @click is shorthand for v-on:click any v-on: events can be prepended with an @ instead -->
+  <li class="list-group-item">
+    {{ task.description }}
+    <!--- @click is shorthand for v-on:click any
+          v-on: events can be prepended with an @ instead -->
     <button class="btn btn-danger btn-xs" @click="deleteTask">
       Delete Task
       <span class="glyphicon glyphicon-remove"></span>
@@ -311,7 +320,7 @@ Just like we did before, we need to add a method to our script object to handle 
 
 ```js
 methods: {
-  deleteTask: function() {
+  deleteTask() {
     // Send a message to the parent component to delete a task
     this.$dispatch('deleteTask', this.task.id);
   }
@@ -322,15 +331,15 @@ And, just like before, we use `this.$dispatch` to send it up our parental chain.
 event in `/client/instances/version-two.js`. Create a new entry in the `events` object.
 
 ```js
-deleteTask: function(task) {
+deleteTask(task) {
   this.$http({
     url: 'tasks/' + task + '/delete',
     method: 'POST',
   })
-  .then(function(response) {
+  .then((response) => {
     // Reload the boards
     this.fetchBoards();
-  }, function(error) {
+  }, (error) => {
     console.error('Error deleting task: ' + error.toString());
   });
 }
@@ -369,11 +378,13 @@ That makes available the `Alert` object we imported as the `<alert>` tag in our 
   width="400px"
   placement="top"
   dismissable>
-    <p><span class="glyphicon glyphicon-trash"></span>You just deleted something.</p>
+    <p>
+      <span class="glyphicon glyphicon-trash"></span>
+      You just deleted something.
+    </p>
   </alert>
-  <board
-    v-for="board in boards"
-    :board="board">
+  <board v-for="board in boards"
+         :board="board">
   </board>
 </div>
 ```
@@ -388,22 +399,37 @@ data: {
 }
 ```
 
-Finally, we need to trigger the showing of alerts. We'll edit the `deleteTask` methond.
+We need to trigger the showing of alerts. Edit the `deleteTask` methond.
 
 ```js
-deleteTask: function(task) {
+deleteTask(task) {
   this.$http({
     url: 'tasks/' + task + '/delete',
     method: 'POST',
   })
-  .then(function(response) {
+  .then((response) => {
     // Reload the boards
     this.fetchBoards();
     // Trigger our alert
     this.showAlert = !this.showAlert;
-  }, function(error) {
+  }, (error) => {
     console.error('Error deleting task: ' + error.toString());
   });
 }
 ```
+
+Finally, let's float our button right. A Vue component can also have a `<style>` tag.
+
+```html
+<!--- task.vue -->
+<style>
+  li button {
+    float: right;
+  }
+</style>
+```
+
+That's it! We can now add and delete tasks from a board.
+
+### Extra Credit -- Move a Task
 

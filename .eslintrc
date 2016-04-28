@@ -1,0 +1,11 @@
+extends: airbnb-base
+
+plugins:
+ - html
+
+parserOptions:
+  ecmaVersion: 6
+  sourceType: module
+
+env:
+  es6: true
